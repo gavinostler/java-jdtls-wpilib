@@ -1,27 +1,66 @@
-# Zed Java
+# Zed Java (WPILib)
 
-This extension adds support for the Java language.
+This extension adds support for the Java + WPILib language. You are required to configure this lsp.
 
-## Initialization Options
-
-If [Lombok] support is enabled via [JDTLS] initialization option
-(`initialization_options.settings.java.jdt.ls.lombokSupport.enabled`), this
-extension will download and add [Lombok] as a javaagent to the JVM arguments for
-[JDTLS].
+## Options
 
 There are also many more options you can pass directly to the language server,
 for example:
 
+Minimal Configuration:
 ```jsonc
 {
   "lsp": {
-    "jdtls": {
+    "wpilib": {
+      // wpilib
+      "initialization_options": {
+        "settings": {
+          "version": "1.28.0", // required for wpilib 
+          "java": {
+            "home": "C:/Users/Public/wpilib/2025/jdk" // or the equivalent of mac: ~/wpilib/2025/jdk
+          },
+          "import": {
+            "gradle": {
+              "enabled": true
+            },
+            "maven": {
+              "enabled": true
+            },
+            "exclusions": [
+              "**/node_modules/**",
+              "**/.metadata/**",
+              "**/archetype-resources/**",
+              "**/META-INF/maven/**",
+              "/**/test/**"
+            ]
+          }
+        },
+        "extendedClientCapabilities": {
+          "classFileContentsSupport": true,
+          "resolveAdditionalTextEditsSupport": true
+        }
+      }
+    },
+  "languages": {
+    "Java": {
+      "language_servers": ["wpilib"]
+    }
+  }
+}
+```
+
+All options:
+```jsonc
+{
+  "lsp": {
+    "wpilib": {
       "initialization_options": {
         "bundles": [],
         "workspaceFolders": ["file:///home/snjeza/Project"],
         "settings": {
+          "version": "1.28.0", // this line is required for WPILib
           "java": {
-            "home": "/usr/local/jdk-9.0.1",
+            "home": "C:/Users/Public/wpilib/2025/jdk", // or the equivalent of mac: ~/wpilib/2025/jdk
             "errors": {
               "incompleteClasspath": {
                 "severity": "warning"
@@ -97,12 +136,3 @@ for example:
   }
 }
 ```
-
-*Example taken from JDTLS's [initialization options wiki page].*
-
-You can see all the options JDTLS accepts [here][initialization options wiki
-page].
-
-[JDTLS]: https://github.com/eclipse-jdtls/eclipse.jdt.ls
-[initialization options wiki page]: https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
-[Lombok]: https://projectlombok.org
